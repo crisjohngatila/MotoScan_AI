@@ -1,0 +1,24 @@
+MotoScan - ONNX integration notes
+=================================
+1) Put motopartscls.onnx in the SAME folder as index.html (not included: it was never uploaded here).
+2) Class names (30, in output-index order). The app uses, in this order:
+     a) labels.json next to index.html: a JSON array of 30 names, e.g. ["Name 0", "Name 1", ...]
+     b) the "names" entry stored inside the ONNX file (Ultralytics models usually have it)
+   If neither exists, the app shows an error instead of guessing.
+3) Run in Colab to see (b) and to get reference scores for one test image:
+
+   import onnx, onnxruntime as ort, numpy as np
+   from PIL import Image
+   m = onnx.load("motopartscls.onnx")
+   print({p.key: p.value for p in m.metadata_props})      # look for 'names'
+   img = Image.open("test.jpg").convert("RGB")
+   w, h = img.size; s = min(w, h)
+   img = img.crop(((w-s)//2, (h-s)//2, (w-s)//2+s, (h-s)//2+s)).resize((224, 224), Image.BILINEAR)
+   x = (np.asarray(img, dtype=np.float32) / 255.0).transpose(2, 0, 1)[None]
+   out = ort.InferenceSession("motopartscls.onnx").run(None, {"images": x})[0][0]
+   print(np.argsort(-out)[:5], np.sort(out)[::-1][:5])
+
+4) On the phone, scan the SAME test.jpg from the gallery and compare the top-5 printed in the
+   browser console ("[MotoScan] top 5") with step 3. If they differ a lot, preprocessing is wrong
+   (edit PRE in ai-model.js).
+5) Needs internet once per load for ONNX Runtime Web (jsDelivr, pinned 1.20.1).
