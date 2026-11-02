@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1B2A3A">
+<title>MotoScan AI</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="loading-screen" role="status" aria-live="polite">
+  <div class="load-logo" aria-hidden="true">
+    <svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="14" fill="none" stroke="currentColor" stroke-width="5"/><circle cx="32" cy="32" r="4" fill="currentColor"/><path d="M32 4v9M32 51v9M4 32h9M51 32h9M12 12l6 6M46 46l6 6M52 12l-6 6M18 46l-6 6" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg>
+    <span class="beam"></span>
+  </div>
+  <!-- TEMPORARY WORDMARK: replace with final logo later -->
+  <p class="wordmark">Moto<b>Scan</b> AI</p>
+  <p id="loading-msg">Preparing your scanner...</p>
+  <div class="bar" aria-hidden="true"><i></i></div>
+  <div id="loading-error" hidden>
+    <p id="loading-error-text"></p>
+    <button type="button" class="btn primary" id="retry-load">Retry</button>
+    <button type="button" class="btn ghost" id="skip-load">Continue without model</button>
+  </div>
+</div>
+
+<div id="app" hidden>
+  <header class="appbar">
+    <!-- TEMPORARY LOGO ICON: replace later -->
+    <svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#E8710A"/><circle cx="32" cy="32" r="12" fill="none" stroke="#fff" stroke-width="5"/><circle cx="32" cy="32" r="3.5" fill="#fff"/><path d="M32 8v8M32 48v8M8 32h8M48 32h8" stroke="#fff" stroke-width="5" stroke-linecap="round"/></svg>
+    <p class="wordmark small">Moto<b>Scan</b> AI</p>
+  </header>
+
+  <main class="scanner">
+    <div id="stage" class="stage">
+      <video id="cam-video" playsinline muted hidden></video>
+      <img id="shot" alt="Captured frame" hidden>
+      <div id="cam-idle" class="idle">
+        <div class="ring" aria-hidden="true"><svg viewBox="0 0 48 48" width="40" height="40"><rect x="5" y="12" width="38" height="27" rx="5" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="24" cy="25" r="7" fill="none" stroke="currentColor" stroke-width="3"/><path d="M17 12l3-5h8l3 5" fill="none" stroke="currentColor" stroke-width="3"/></svg></div>
+        <p class="empty-t">Camera is off</p>
+        <p class="sub">Tap Start Camera for a live view.</p>
+      </div>
+      <span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span id="cam-status" class="pill" data-k="off" role="status">Camera off</span>
+      <span class="beam"></span>
+      <div id="scanning" role="status" aria-live="polite" hidden><span class="spinner" aria-hidden="true"></span> Scanning this frame...</div>
+      <p id="photo-note" class="toast" role="status" aria-live="polite" hidden></p>
+    </div>
+  </main>
+
+  <footer class="controls">
+    <div class="row2">
+      <button type="button" class="btn ghost" id="cam-start">Start Camera</button>
+      <button type="button" class="btn ghost" id="cam-stop" hidden>Stop Camera</button>
+      <button type="button" class="btn ghost" id="gallery-btn">Use Gallery Photo</button>
+    </div>
+    <button type="button" class="btn primary big" id="scan-btn">Scan Part</button>
+    <input id="gallery-input" type="file" accept="image/*" class="sr-only" tabindex="-1">
+  </footer>
+</div>
+
+<div id="modal" class="modal" hidden>
+  <div id="sheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="pop-title"></div>
+</div>
+
+<section id="details" class="details" role="dialog" aria-modal="true" aria-label="Part details" hidden>
+  <div class="dhead"><button type="button" class="btn ghost" id="back-btn">&larr; Back to Scanner</button></div>
+  <div id="dbody" class="dbody"></div>
+</section>
+
+<script src="parts-data.js"></script>
+<script src="ai-model.js"></script>
+<script src="camera.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
